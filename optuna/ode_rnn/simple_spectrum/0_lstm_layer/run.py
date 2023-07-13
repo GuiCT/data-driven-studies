@@ -11,9 +11,6 @@ from scipy.integrate import odeint
 import optuna
 
 
-from callbacks import StopOnceReachImprovement
-
-
 def separate_groups(x: np.ndarray, size: int):
     if (len(x.shape) != 2):
         raise ValueError(
@@ -174,6 +171,5 @@ if __name__ == "__main__":
         study = optuna.load_study(
             study_name='lstm_layer', storage='sqlite:///lstm_layer.db')
 
-    study.optimize(objective, n_trials=29, timeout=60 * 30,
-                   callbacks=[StopOnceReachImprovement])
+    study.optimize(objective, n_trials=29, timeout=60 * 30)
     exit(0)

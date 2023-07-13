@@ -166,10 +166,10 @@ if __name__ == "__main__":
     # Se o estudo já existe no banco de dados, carrega-o, caso contrário, cria um novo
     try:
         study = optuna.create_study(
-            study_name='lstm_layer', direction='minimize', storage='sqlite:///lstm_layer.db')
+            study_name='lstm_layer', direction='minimize', storage='sqlite:///../lstm_layer.db')
     except optuna.exceptions.DuplicatedStudyError:
         study = optuna.load_study(
-            study_name='lstm_layer', storage='sqlite:///lstm_layer.db')
+            study_name='lstm_layer', storage='sqlite:///../lstm_layer.db')
 
     study.optimize(objective, n_trials=29, timeout=60 * 30)
     exit(0)

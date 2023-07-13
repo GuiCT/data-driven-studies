@@ -5,3 +5,4 @@ numpy
 matplotlib
 optuna
 h5py
+scikit-learn

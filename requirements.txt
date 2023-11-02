@@ -6,3 +6,5 @@ matplotlib
 optuna
 h5py
 scikit-learn
+ipykernel
+autopep8

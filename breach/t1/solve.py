@@ -37,7 +37,7 @@ def solve(
     # Variáveis necessárias para simulação
     # A = np.zeros(n_points)
     # A[0] = B_0 * X_1
-    A = np.ones(n_points) * B_0 * X_1
+    A = np.zeros(n_points)
     Q = np.zeros(n_points)
     # z_b = np.zeros(n_points)
     # z_b[0] = Z_B_0
@@ -52,6 +52,9 @@ def solve(
     # Funções de atualização de erosão
     def phi(x): return 1 + 0.5 * (x - 0.17)**4
     def psi(x): return 2*x + x**2
+    def largura_media(): return np.mean(b)
+
+    A = np.ones(n_points) * largura_media() * X_1
 
     for step in range(n_steps):
         p = 2 * (A / b)**(2/3) + b
@@ -66,10 +69,29 @@ def solve(
         tau_b = RHO_WATER * GRAVITY * MANNING**2 * (V**2 / R**(1/3))
 
         # Atualização de A e Q a partir do esquema upwind
-        A[1:] = A[1:] - dt / dx * (Q[1:] - Q[:-1])
+        # Derivada espacial de Q
+        dQdx = np.zeros(n_points)
+        # Primeiro ponto, diferença avançada
+        dQdx[0] = (Q[1] - Q[0]) / dx
+        # Último ponto, diferença atrasada
+        dQdx[-1] = (Q[-1] - Q[-2]) / dx
+        # Pontos intermediários, diferença central
+        dQdx[1:-1] = (Q[2:] - Q[:-2]) / (2 * dx)
+        # A[1:] = A[1:] - dt / dx * (Q[1:] - Q[:-1])
+        A -= dt * dQdx
+
         Q2A = Q**2 / A
-        Q[1:] = Q[1:] - dt / dx * (Q2A[1:] - Q2A[:-1]) + dt * GRAVITY * A[1:] *\
-            (z_b[1:] - z_b[:-1]) / dx + dt * GRAVITY * A[1:] * S_f[1:]
+        # Derivada espacial de Q²/A
+        dQ2Adx = np.zeros(n_points)
+        dQ2Adx[0] = (Q2A[1] - Q2A[0]) / dx
+        dQ2Adx[-1] = (Q2A[-1] - Q2A[-2]) / dx
+        dQ2Adx[1:-1] = (Q2A[2:] - Q2A[:-2]) / (2 * dx)
+        # Derivada espacial de z_b
+        dz_bdx = np.zeros(n_points)
+        dz_bdx[0] = (z_b[1] - z_b[0]) / dx
+        dz_bdx[-1] = (z_b[-1] - z_b[-2]) / dx
+        dz_bdx[1:-1] = (z_b[2:] - z_b[:-2]) / (2 * dx)
+        Q -= dt * (GRAVITY * A * (dQdx + S_f) + dQ2Adx)
 
         # Atualização de b e z_b a partir das derivadas temporais
         erosion_term = np.maximum(tau_b - TAU_C, 0)

@@ -161,3 +161,9 @@ cython_debug/
 
 # RTX Runtime Version Controller
 .rtx.toml
+
+# HDF5 models
+*.h5
+
+# Generated CSVs
+breach_simplified.csv

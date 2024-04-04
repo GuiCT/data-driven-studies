@@ -1,2 +1,5 @@
 # Droplet numeric data
 .data/
+
+# Graphs and tables
+.results/

@@ -1,0 +1,11 @@
+torch
+numpy
+matplotlib
+optuna
+scikit-learn
+ipykernel
+autopep8
+pandas
+tensorflow
+keras
+tabulate

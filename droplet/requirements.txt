@@ -4,3 +4,4 @@ scikit-learn
 ipykernel
 autopep8
 pandas
+optuna

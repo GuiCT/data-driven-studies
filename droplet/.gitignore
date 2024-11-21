@@ -4,3 +4,5 @@
 # Graphs and tables
 .results/
 .optunadb/
+.optunadbbak/
+.studies/
